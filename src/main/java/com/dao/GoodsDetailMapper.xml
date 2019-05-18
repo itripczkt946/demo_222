@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 命名空间： 指定接口的路径 -->
+<mapper namespace="com.dao.GoodsDetailMapper">
+
+
+	<resultMap id="detailMap" type="GoodsDetail">
+		<id property="id" column="id"></id>
+		<result property="name" column="name"></result>
+		<result property="address" column="address"></result>
+		<result property="price" column="price"></result>
+		<result property="createDate" column="createDate"></result>
+		<result property="remaining" column="remaining"></result>
+
+		<association property="goodsSort" javaType="GoodsSort" column="sortid">
+			<result column="sname" property="name"></result>
+		</association>
+
+	</resultMap>
+
+	<!--显示所有商品详细信息-->
+	<select id="findDetail" resultMap="detailMap">
+		select gd.*,gs.name as sname from goods_detail gd,goods_sort gs where gd.sortid = gs.id
+		<if test="sortId != null and sortId !=''">
+			and sortid = #{sortId}
+		</if>
+		 limit #{startRow},#{endRow}
+	</select>
+
+	<!--显示所有分类-->
+	<select id="findSort" resultType="GoodsSort">
+		select * from goods_sort
+	</select>
+
+	<!--根据id查询商品详情-->
+	<select id="getDetailById" resultMap="detailMap" parameterType="int">
+		select gd.*,gs.name as sname from goods_detail gd,goods_sort gs where gd.sortid = gs.id and id=#{id}
+	</select>
+
+	<!--修改功能-->
+	<update id="updateDetail" parameterType="GoodsDetail">
+		update 	goods_detail set remaining=#{remaining} where id=#{id}
+	</update>
+
+
+	<!--查询总记录数-->
+	<select id="getTotalCount" resultType="int" parameterType="string">
+		select count(1) from goods_detail where sortid = #{sortId}
+	</select>
+
+
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+</mapper>
